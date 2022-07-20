@@ -8,52 +8,36 @@ class DispositivoWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[350]!,
-                    blurRadius: 2.0,
-                    offset: Offset(0, 1.0)
-                  )
-                ],
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.white
-              ),
-              child: MaterialButton(
-                disabledTextColor: Colors.black87,
-                padding: EdgeInsets.only(left: 10),
-                onPressed: null,
-                child: Wrap(
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        children: [
-                          Text(disp.modelo),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    disp.marca,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-            ),
-          ],
-        ),
-    );
-  }
+    return Card(
+    color: Color.fromARGB(255, 57, 57, 57),
+    // Con esta propiedad modificamos la forma de nuestro card
+    // Aqui utilizo RoundedRectangleBorder para proporcionarle esquinas circulares al Card
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    
+    // Con esta propiedad agregamos margen a nuestro Card
+    // El margen es la separación entre widgets o entre los bordes del widget padre e hijo
+    margin: EdgeInsets.all(15),
+    
+    // Con esta propiedad agregamos elevación a nuestro card
+    // La sombra que tiene el Card aumentará
+    elevation: 10,
 
+    // La propiedad child anida un widget en su interior
+    // Usamos columna para ordenar un ListTile y una fila con botones
+    child: Column(
+      children: <Widget>[
+
+        // Usamos ListTile para ordenar la información del card como titulo, subtitulo e icono
+        ListTile(
+          contentPadding: EdgeInsets.fromLTRB(15, 10, 25, 0),
+          title: Text(disp.modelo, style: TextStyle(color: Colors.white)),
+          subtitle: Text(disp.marca, style: TextStyle(color: Colors.white)),
+          leading: Icon(Icons.phone_android, color: Colors.white),
+        ),
+        
+        // Usamos una fila para ordenar los botones del card
+      ],
+    ),
+  );
+}
 }

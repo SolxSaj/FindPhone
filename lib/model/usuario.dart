@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:findphone_vdos/model/dispositivo.dart';
-
 class Usuario {
     Usuario({
         this.idUsuario,

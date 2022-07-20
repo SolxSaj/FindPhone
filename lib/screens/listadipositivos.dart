@@ -25,14 +25,33 @@ class ListaDispositivosState extends State<ListaDispositivos>{
 
     final dispositivoServicio = Provider.of<DispositivoServicio>(context);
 
+
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Dispositivos")),
-      body: ListView.builder(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Bienvenido " + dispositivoServicio.userActual.nombre + dispositivoServicio.userActual.apellido, style: TextStyle(color: Colors.white)),
+        backgroundColor: Color.fromARGB(255, 43, 167, 200),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.construction_rounded, color: Colors.white),
+            onPressed: (){
+
+            }),
+          IconButton(
+            icon: const Icon(Icons.update, color: Colors.white),
+            onPressed: (){
+              dispositivoServicio.ListaDispositivos();
+            },
+          )
+        ],
+      ),
+      body:ListView.builder(
         itemCount: dispositivoServicio.dispositivos.length,
         itemBuilder: (BuildContext context, int index) => GestureDetector(
           onTap: () {
             dispositivoServicio.dispSeleccionado = dispositivoServicio.dispositivos[index].copy();
-            Navigator.pushNamed(context, "");
+            //Navigator.pushNamed(context, "");
           },
           child: DispositivoWidget(disp: dispositivoServicio.dispositivos[index])
         ),
