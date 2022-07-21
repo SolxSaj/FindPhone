@@ -93,7 +93,7 @@ class LoginState extends State<Login>{
                   child: Center(
                     child: InkWell(
                       child: Text("¿Aún no tienes cuenta? Crea una cuenta"),
-                      onTap: () => Navigator.pushNamed(context, "Dispositivos"),
+                      onTap: () => Navigator.pushNamed(context, "Register"),
                     ) 
                   ),
                 ),
