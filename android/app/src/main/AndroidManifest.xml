@@ -1,5 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.findphone_vdos">
+    <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBMlSngq4jREjVpN6xvExBA37G8QhLHc8c"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
    <application
         android:label="findphone_vdos"
         android:name="${applicationName}"

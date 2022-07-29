@@ -1,4 +1,7 @@
+import 'package:findphone_vdos/model/usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:findphone_vdos/service/dispositivo_service.dart';
+import 'package:provider/provider.dart';
   
 class Registro extends StatefulWidget {
   @override
@@ -8,17 +11,25 @@ class Registro extends StatefulWidget {
 class _RegistroState extends State<Registro> {
   var _formKey = GlobalKey<FormState>();
   var isLoading = false;
+
+  TextEditingController nombre = new TextEditingController();
+  TextEditingController apellido = new TextEditingController();
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
   
-  void _submit() {
+  bool _submit() {
     final isValid = _formKey.currentState!.validate();
     if (!isValid) {
-      return;
+      return false;
     }
     _formKey.currentState!.save();
+    return true;
   }
   
   @override
   Widget build(BuildContext context) {
+    final dispositivoServicio = Provider.of<DispositivoServicio>(context);
+
     return Scaffold(
       //body
       body: Container(
@@ -54,6 +65,7 @@ class _RegistroState extends State<Registro> {
                     height: MediaQuery.of(context).size.width * 0.1,
                   ),
                   TextFormField(
+                    controller: nombre,
                     decoration: InputDecoration(labelText: 'Nombre(s)'),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (value) {
@@ -71,6 +83,7 @@ class _RegistroState extends State<Registro> {
                     height: MediaQuery.of(context).size.width * 0.1,
                   ),
                   TextFormField(
+                    controller: apellido,
                     decoration: InputDecoration(labelText: 'Apellidos'),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (value) {
@@ -88,6 +101,7 @@ class _RegistroState extends State<Registro> {
                     height: MediaQuery.of(context).size.width * 0.1,
                   ),
                   TextFormField(
+                    controller: email,
                     decoration: InputDecoration(labelText: 'E-Mail'),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (value) {
@@ -108,6 +122,7 @@ class _RegistroState extends State<Registro> {
                   ),
                   //text input 
                   TextFormField(
+                    controller: password,
                     decoration: InputDecoration(labelText: 'Password'),
                     keyboardType: TextInputType.emailAddress,
                     onFieldSubmitted: (value) {},
@@ -133,7 +148,13 @@ class _RegistroState extends State<Registro> {
                         fontSize: 24.0,
                       ),
                     ),
-                    onPressed: () => _submit(),
+                    onPressed: () {
+                      Usuario userTemp = Usuario(apellido: apellido.text, email: email.text, nombre: nombre.text, password: password.text);
+                      if(_submit()){
+                        dispositivoServicio.crearUsuario(userTemp);
+                        Navigator.pop(context);                      
+                      }
+                    } ,
                   )
                 ],
               ),

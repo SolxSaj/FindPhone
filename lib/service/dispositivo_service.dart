@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:findphone_vdos/model/dispositivo.dart';
+import 'package:findphone_vdos/model/ubicacion.dart';
 import 'package:findphone_vdos/model/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:device_info_plus/device_info_plus.dart';
-//import 'package:imei_plugin/imei_plugin.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 
 class DispositivoServicio extends ChangeNotifier{
 
@@ -16,12 +18,24 @@ class DispositivoServicio extends ChangeNotifier{
   bool isSaving = false;
   late Dispositivo dispSeleccionado;
   late Usuario userActual;
+  late Ubicacion ubiActual;
 
 
   DispositivoServicio(){
+    this.solicitarPermisos();
     this.ListaDispositivos();
     userActual = Usuario(apellido: " ", email: " ", nombre: " ", password: " ", idUsuario: "Nulo");
   }
+
+//Permisos
+
+Future<void> solicitarPermisos() async{
+  Map<Permission, PermissionStatus> statuses = await[
+    Permission.location,
+  ].request();
+}
+
+//Funciones de dispositivos
 
   Future<List<Dispositivo>> ListaDispositivos() async{
       this.isLoading = true;
@@ -115,6 +129,8 @@ class DispositivoServicio extends ChangeNotifier{
 
   }
 
+//Funciones de usuarios
+
   Future<Usuario> ValidarUsuario(String email, String password) async{
       this.isLoading = true;
       notifyListeners();
@@ -151,15 +167,18 @@ class DispositivoServicio extends ChangeNotifier{
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     bool existe = false;
-    //String imei = await ImeiPlugin.getImei();
+    String? imei;
+
+    imei = await UniqueIdentifier.serial;
+    
+    print(imei);
 
     String model = androidInfo.brand! + " " + androidInfo.device!;
-    Dispositivo dispTemp = Dispositivo(idUsuario: idUser, imei: "123456789a", marca: androidInfo.manufacturer!, modelo: model);
+    Dispositivo dispTemp = Dispositivo(idUsuario: idUser, imei: imei!, marca: androidInfo.manufacturer!, modelo: model);
 
     final url = Uri.https(_baseURL, 'dispositivo.json');
     final response = await http.get(url);
     final Map<String, dynamic> mapDisp = json.decode(response.body);
-
 
       mapDisp.forEach((key, value) { 
         if(value['imei'] == dispTemp.imei && value['idUsuario'] == dispTemp.idUsuario){  
@@ -171,9 +190,81 @@ class DispositivoServicio extends ChangeNotifier{
       crear(dispTemp);
     }
 
+
     isLoading = false;
     notifyListeners();
   }
+
+  Future creActualizacionUsuario(Usuario user) async{
+
+    this.isSaving = true;
+    notifyListeners();
+
+    if(user.idUsuario == null){
+        await crearUsuario(user);
+    }else{
+        //await updateUsuario(user);
+    }
+
+    this.isSaving = false;
+    notifyListeners();
+
+  }  
+
+  Future<String> crearUsuario(Usuario user) async{
+
+    final url = Uri.https(_baseURL, 'usuario.json');
+    final response = await http.post(url, body: user.toJson());
+
+    final datos = json.decode(response.body);
+
+    user.idUsuario = datos['name'];
+
+    return "Usuario creado";
+  }
+
+  Future<String> updateUsuario(Usuario user) async{
+
+    final url = Uri.https(_baseURL, 'usuario.json');
+    final response = await http.put(url, body: user.toJson());
+
+    final datos = json.decode(response.body);
+
+    this.userActual = user;
+
+    return "Dispositivo actualizado";
+
+  }
+
+  void comprobarPermisos(){
+
+  }
+
+  //Funciones del ubicación
+
+  Future<Ubicacion> obtenerUbicacion(String id) async{
+        this.isLoading = true;
+        notifyListeners();
+
+        final url = Uri.https(_baseURL, 'ubicacion.json');
+        final response = await http.get(url);
+        final Map<String, dynamic> mapDisp = json.decode(response.body);
+        this.ubiActual = Ubicacion(idDispositivo: "Nulo", latitud: 0, longitud: 0);
+
+        mapDisp.forEach((key, value) {
+          if(value['idUbicacion'] == id){
+            final tempUbi = Ubicacion.fromMap(value);
+            tempUbi.idUbicacion = key;
+            this.ubiActual = tempUbi;
+          }
+        });
+
+        this.isLoading = false;
+        notifyListeners();
+
+        return this.ubiActual;
+
+    }
 
 }
 
