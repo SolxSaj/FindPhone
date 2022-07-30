@@ -1,5 +1,6 @@
-import 'package:findphone_vdos/model/dispositivo.dart';
+import 'package:findphone_vdos/screens/dispositivo.dart';
 import 'package:findphone_vdos/screens/listadipositivos.dart';
+import 'package:findphone_vdos/screens/map.dart';
 import 'package:findphone_vdos/screens/registro.dart';
 import 'package:findphone_vdos/service/dispositivo_service.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,8 @@ class App extends StatelessWidget{
         'Dispositivos': (_) => ListaDispositivos(),
         'Login': (_) => Login(),
         'Register': (_) => Registro(),
+        'Especifico': (_) => DispositivoEspecifico(),
+        'Mapa': (_) => MapDisp(),
       },
     );
   }

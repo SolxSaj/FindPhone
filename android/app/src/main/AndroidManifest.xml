@@ -1,7 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.findphone_vdos">
-    <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyBMlSngq4jREjVpN6xvExBA37G8QhLHc8c"/>
 <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -25,6 +23,8 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+            <meta-data android:name="com.google.android.geo.API_KEY"    
+               android:value="AIzaSyDHRnqjD3JGSfKVM9KV8rGhjpac8fAjPnM"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

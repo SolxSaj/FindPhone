@@ -19,11 +19,14 @@ class DispositivoServicio extends ChangeNotifier{
   late Dispositivo dispSeleccionado;
   late Usuario userActual;
   late Ubicacion ubiActual;
+  late Dispositivo dispActual;
 
 
   DispositivoServicio(){
     this.solicitarPermisos();
     this.ListaDispositivos();
+    dispActual = Dispositivo(idUsuario: "", imei: "nulo", marca: "", modelo: "");
+    this.ObtenerActual();
     userActual = Usuario(apellido: " ", email: " ", nombre: " ", password: " ", idUsuario: "Nulo");
   }
 
@@ -32,10 +35,35 @@ class DispositivoServicio extends ChangeNotifier{
 Future<void> solicitarPermisos() async{
   Map<Permission, PermissionStatus> statuses = await[
     Permission.location,
+    Permission.sensors,
   ].request();
 }
 
 //Funciones de dispositivos
+
+  Future<void> ObtenerActual() async {
+      this.isLoading = true;
+      notifyListeners();
+
+      final url = Uri.https(_baseURL, 'dispositivo.json');
+      final response = await http.get(url);
+      final Map<String, dynamic> mapDisp = json.decode(response.body);
+      String? imei;
+
+      imei = await UniqueIdentifier.serial;
+
+      mapDisp.forEach((key, value) { 
+        if(value['imei'] == imei){  
+          final tempDisp = Dispositivo.fromMap(value);
+          tempDisp.idDispositivo = key;
+          this.dispActual = tempDisp;
+        }
+      });
+
+      print(this.dispActual.idDispositivo);
+      this.isLoading = false;
+      notifyListeners();
+  }
 
   Future<List<Dispositivo>> ListaDispositivos() async{
       this.isLoading = true;
@@ -203,7 +231,7 @@ Future<void> solicitarPermisos() async{
     if(user.idUsuario == null){
         await crearUsuario(user);
     }else{
-        //await updateUsuario(user);
+        await updateUsuario(user);
     }
 
     this.isSaving = false;
@@ -236,13 +264,9 @@ Future<void> solicitarPermisos() async{
 
   }
 
-  void comprobarPermisos(){
-
-  }
-
   //Funciones del ubicación
 
-  Future<Ubicacion> obtenerUbicacion(String id) async{
+  Future<void> obtenerUbicacion() async{
         this.isLoading = true;
         notifyListeners();
 
@@ -252,7 +276,7 @@ Future<void> solicitarPermisos() async{
         this.ubiActual = Ubicacion(idDispositivo: "Nulo", latitud: 0, longitud: 0);
 
         mapDisp.forEach((key, value) {
-          if(value['idUbicacion'] == id){
+          if(value['idDispositivo'] == this.dispActual.idDispositivo){
             final tempUbi = Ubicacion.fromMap(value);
             tempUbi.idUbicacion = key;
             this.ubiActual = tempUbi;
@@ -261,10 +285,48 @@ Future<void> solicitarPermisos() async{
 
         this.isLoading = false;
         notifyListeners();
-
-        return this.ubiActual;
-
     }
+
+    Future creActualizacionUbi(Ubicacion ubi) async{
+
+    this.isSaving = true;
+    notifyListeners();
+
+    if(ubi.idUbicacion == null){
+        await crearUbicacion(ubi);
+    }else{
+        await updateUbicacion(ubi);
+    }
+
+    this.isSaving = false;
+    notifyListeners();
+
+  }  
+
+  Future<String> crearUbicacion(Ubicacion ubi) async{
+
+    final url = Uri.https(_baseURL, 'ubicacion.json');
+    final response = await http.post(url, body: ubi.toJson());
+
+    final datos = json.decode(response.body);
+
+    ubi.idUbicacion = datos['name'];
+
+    return "Usuario creado";
+  }
+
+  Future<String> updateUbicacion(Ubicacion ubi) async{
+
+    final url = Uri.https(_baseURL, 'ubicacion.json');
+    final response = await http.put(url, body: ubi.toJson());
+
+    final datos = json.decode(response.body);
+
+    this.ubiActual = ubi;
+
+    return "Dispositivo actualizado";
+
+  }
 
 }
 
