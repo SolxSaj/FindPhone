@@ -61,6 +61,9 @@ Future<void> solicitarPermisos() async{
       });
 
       print(this.dispActual.idDispositivo);
+
+      obtenerUbicacion();
+
       this.isLoading = false;
       notifyListeners();
   }
@@ -118,12 +121,16 @@ Future<void> solicitarPermisos() async{
 
     dispositivo.idDispositivo = datos['name'];
 
+    Ubicacion tempUbi = Ubicacion(idDispositivo: dispositivo.idDispositivo!, latitud: 0, longitud: 0);
+
+    creActualizacionUbi(tempUbi);
+
     return "Dispositivo añadido";
   }
 
   Future<String> update(Dispositivo dispositivo) async{
 
-    final url = Uri.https(_baseURL, 'dispositivo.json');
+    final url = Uri.https(_baseURL, 'dispositivo/${dispositivo.idDispositivo}.json');
     final response = await http.put(url, body: dispositivo.toJson());
 
     final datos = json.decode(response.body);
@@ -214,10 +221,11 @@ Future<void> solicitarPermisos() async{
         }
       });
 
+
+
     if(existe == false){
       crear(dispTemp);
     }
-
 
     isLoading = false;
     notifyListeners();
@@ -278,10 +286,14 @@ Future<void> solicitarPermisos() async{
         mapDisp.forEach((key, value) {
           if(value['idDispositivo'] == this.dispActual.idDispositivo){
             final tempUbi = Ubicacion.fromMap(value);
+            print(value);
             tempUbi.idUbicacion = key;
             this.ubiActual = tempUbi;
           }
         });
+
+        print(this.ubiActual.latitud);
+        print(this.ubiActual.longitud);
 
         this.isLoading = false;
         notifyListeners();
@@ -317,12 +329,14 @@ Future<void> solicitarPermisos() async{
 
   Future<String> updateUbicacion(Ubicacion ubi) async{
 
-    final url = Uri.https(_baseURL, 'ubicacion.json');
+    final url = Uri.https(_baseURL, 'ubicacion/${ubi.idUbicacion}.json');
     final response = await http.put(url, body: ubi.toJson());
 
     final datos = json.decode(response.body);
 
     this.ubiActual = ubi;
+    print(this.ubiActual.latitud);
+    print(this.ubiActual.longitud);
 
     return "Dispositivo actualizado";
 

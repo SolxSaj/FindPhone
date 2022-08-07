@@ -78,7 +78,7 @@ class LoginState extends State<Login>{
                       ),
                       ),
                     onPressed: (){
-                      dispositivoServicio.obtenerUbicacion();
+                     // dispositivoServicio.obtenerUbicacion();
                       dispositivoServicio.ValidarUsuario(email.text, password.text);
                       if(dispositivoServicio.userActual.idUsuario != "Nulo"){
                         dispositivoServicio.CompDispo(dispositivoServicio.userActual.idUsuario!);

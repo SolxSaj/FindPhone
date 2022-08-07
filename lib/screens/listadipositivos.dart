@@ -31,11 +31,12 @@ class ListaDispositivosState extends State<ListaDispositivos>{
         title: Text("Bienvenido " + dispositivoServicio.userActual.nombre + " " + dispositivoServicio.userActual.apellido, style: TextStyle(color: Colors.white)),
         backgroundColor: Color.fromARGB(255, 43, 167, 200),
         actions: <Widget>[
-          /*IconButton(
-            icon: const Icon(Icons.construction_rounded, color: Colors.white),
+          IconButton(
+            icon: const Icon(Icons.location_city, color: Colors.white),
             onPressed: (){
-
-            }),*/
+              Navigator.pushNamed(context, "Location");
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.update, color: Colors.white),
             onPressed: (){

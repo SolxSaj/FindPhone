@@ -38,9 +38,10 @@ dependencies:
   provider: ^5.0.0
   device_info_plus: ^4.0.1
   permission_handler: 
-  google_maps_flutter: ^2.1.10
   unique_identifier: ^0.2.0
   geolocator:
+  flutter_map: ^2.1.1
+  latlong2: ^0.8.0
   
 
 dev_dependencies:
